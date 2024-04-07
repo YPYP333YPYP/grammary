@@ -1,6 +1,7 @@
 package com.example.gachon.domain.user;
 
 import com.example.gachon.domain.token.dto.request.SignUpRequestDto;
+import com.example.gachon.domain.user.dto.response.UserResponseDto;
 
 public class UsersConverter {
 
@@ -31,6 +32,15 @@ public class UsersConverter {
                 .role("ADMIN")
                 .profileUrl(DEFAULT_PROFILE_URL)
                 .status(Status.ENABLED)
+                .build();
+    }
+
+    public static UserResponseDto.UserInfoDto toUserInfoDto(Users user){
+        return UserResponseDto.UserInfoDto.builder()
+                .userId(user.getId())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .profileUrl(user.getProfileUrl())
                 .build();
     }
 }

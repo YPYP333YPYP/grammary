@@ -30,7 +30,7 @@ public class RefreshTokenUserController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/local/sign-up")
-    @Operation(summary = "어드민 로컬 회원가입", description = "JWT 이용해 어드민 로컬 회원가입 진행, SignUpRequestDto, SignUpResponseDto 사용")
+    @Operation(summary = "로컬 회원가입", description = "JWT 이용해 어드민 로컬 회원가입 진행, SignUpRequestDto, SignUpResponseDto 사용")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER401", description = "이미 존재하는 이메일입니다.", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
