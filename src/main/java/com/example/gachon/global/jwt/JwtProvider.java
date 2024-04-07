@@ -44,25 +44,53 @@ public class JwtProvider {
     }
 
     // 유저 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
-    public TokenDto generateToken(Authentication authentication, String userId) {
-        // 권한 가져오기
+    public TokenDto generateUserToken(Authentication authentication, String userId) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
 
-        // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRATION_TIME);
         String accessToken  = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .claim("userId", userId)
+                .claim("userType", "user") // 일반 유저인 경우 추가
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        // Refresh Token 생성
+        String refreshToken = Jwts.builder()
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRATION_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return TokenDto.builder()
+                .grantType(BEARER_TYPE)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    // 어드민 유저에 대한 토큰 생성 메서드
+    public TokenDto generateAdminToken(Authentication authentication, String userId) {
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        long now = (new Date()).getTime();
+
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRATION_TIME);
+        String accessToken  = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim(AUTHORITIES_KEY, authorities)
+                .claim("userId", userId)
+                .claim("userType", "admin") // 어드민 유저인 경우 추가
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -155,13 +183,28 @@ public class JwtProvider {
                 .build();
     }
 
-    public String regenerateAccessToken(Users user){
+    public String regenerateUserAccessToken(Users user) {
         long now = (new Date()).getTime();
 
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRATION_TIME);
-        String accessToken  = Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setSubject(user.getEmail())
                 .claim(AUTHORITIES_KEY, "ROLE_USER")
+                .claim("userId", user.getId())
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return accessToken;
+    }
+
+    public String regenerateAdminAccessToken(Users user) {
+        long now = (new Date()).getTime();
+
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRATION_TIME);
+        String accessToken = Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim(AUTHORITIES_KEY, "ROLE_ADMIN")
                 .claim("userId", user.getId())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)

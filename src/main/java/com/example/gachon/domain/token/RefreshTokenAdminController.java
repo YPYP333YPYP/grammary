@@ -22,27 +22,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "token-controller", description = "로컬 로그인, 회원가입 API")
+@Tag(name = "admin-token-controller", description = "어드민 로컬 로그인, 회원가입 API")
 @RestController
-@RequestMapping("/v1/auth")
+@RequestMapping("/v1/admin/auth")
 @RequiredArgsConstructor
-public class RefreshTokenController {
+public class RefreshTokenAdminController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/local/sign-up")
-    @Operation(summary = "로컬 회원가입", description = "JWT 이용해 로컬 회원가입 진행, SignUpRequestDto, SignUpResponseDto 사용")
+    @Operation(summary = "어드민 로컬 회원가입", description = "JWT 이용해 로컬 회원가입 진행, SignUpRequestDto, SignUpResponseDto 사용")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER401", description = "이미 존재하는 이메일입니다.", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER411", description = "이미 존재하는 닉네임입니다.", content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
     public ApiResponse<SuccessStatus> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
-        refreshTokenService.signUp(signUpRequestDto);
+        refreshTokenService.adminSignUp(signUpRequestDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 
     @PostMapping("/local/login")
-    @Operation(summary = "로컬 로그인", description = "JWT 이용해 로컬 로그인 진행")
+    @Operation(summary = "어드민 로컬 로그인", description = "JWT 이용해 로컬 로그인 진행")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER403", description = "비밀번호가 잘못되었습니다."),
@@ -53,24 +53,17 @@ public class RefreshTokenController {
     }
 
     @PostMapping("/refresh")
-    @Operation(summary = "토큰 만료시 AccessToken 재발급", description = "RefreshToken을 받아 AccessToken 재발급, RefreshTokenRequestDto & RegenerateTokenResponseDto 이용")
+    @Operation(summary = "어드민 토큰 만료시 AccessToken 재발급", description = "RefreshToken을 받아 AccessToken 재발급, RefreshTokenRequestDto & RegenerateTokenResponseDto 이용")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH407", description = "리프레시 토큰이 유효하지 않습니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH405", description = "토큰 속 유저 정보가 유효하지 않습니다."),
     })
     public ApiResponse<RegenerateTokenResponseDto> refresh(@RequestBody RefreshTokenRequestDto request){
-        String accessToken = refreshTokenService.regenerateAccessToken(request);
+        String accessToken = refreshTokenService.regenerateAdminAccessToken(request);
         return ApiResponse.onSuccess(RefreshTokenConverter.toRegenerateTokenDto(accessToken));
     }
 
-    @PostMapping("/kakao/login")
-    @Operation(summary = "카카오 로그인", description = "카카오유저 정보가 담긴 token을 KakaoRequestDto로 받아 유저 확인 후 TokenDto반환")
-    @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
-    })
-    public ApiResponse<TokenDto> kakaoLogin(@RequestBody KakaoRequestDto request) throws JsonProcessingException {
-        List<String> kakaoUserInfo = refreshTokenService.getKakaoUserInfo(request);
-        return ApiResponse.onSuccess(refreshTokenService.kakaoLogin(kakaoUserInfo));
-    }
+
+
 }

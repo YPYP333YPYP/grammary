@@ -48,10 +48,10 @@ public class RefreshTokenService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    private static final String DEFAULT_PROFILE_URL = "https://reviewzipbucket.s3.ap-northeast-2.amazonaws.com/ReviewImage/911a02f0-206c-4fb0-b287-f49b58429526.png";
+    private static final String DEFAULT_PROFILE_URL = "";
 
     @Transactional
-    public SignUpResponseDto signUp(SignUpRequestDto signUpRequestDto) {
+    public SignUpResponseDto userSignUp(SignUpRequestDto signUpRequestDto) {
         if(usersRepository.existsByEmail(signUpRequestDto.getEmail())) {
             throw new UsersHandler(ErrorStatus.USER_EXISTS_EMAIL);
         }
@@ -62,7 +62,22 @@ public class RefreshTokenService {
 
         signUpRequestDto.setPassword(encodePassword(signUpRequestDto.getPassword()));
 
-        return SignUpResponseDto.signUpResponseDto(usersRepository.save(UsersConverter.toSignUpDto(signUpRequestDto)));
+        return SignUpResponseDto.signUpResponseDto(usersRepository.save(UsersConverter.toUserSignUpDto(signUpRequestDto)));
+    }
+
+    @Transactional
+    public SignUpResponseDto adminSignUp(SignUpRequestDto signUpRequestDto) {
+        if(usersRepository.existsByEmail(signUpRequestDto.getEmail())) {
+            throw new UsersHandler(ErrorStatus.USER_EXISTS_EMAIL);
+        }
+
+        if(usersRepository.existsByNickname(signUpRequestDto.getNickname())){
+            throw new UsersHandler(ErrorStatus.USER_EXISTS_NICKNAME);
+        }
+
+        signUpRequestDto.setPassword(encodePassword(signUpRequestDto.getPassword()));
+
+        return SignUpResponseDto.signUpResponseDto(usersRepository.save(UsersConverter.toAdminSignUpDto(signUpRequestDto)));
     }
 
     public String encodePassword(String password) {
@@ -88,7 +103,7 @@ public class RefreshTokenService {
             Long userId = userDetails.getUserId();
 
             // 4. 인증 정보를 기반으로 JWT 토큰 생성
-            TokenDto tokenDto = jwtProvider.generateToken(authentication, userId.toString());
+            TokenDto tokenDto = jwtProvider.generateUserToken(authentication, userId.toString());
             // 5. RefreshToken 저장
             RefreshToken refreshToken = RefreshToken.builder()
                     .key(authentication.getName())
@@ -107,7 +122,7 @@ public class RefreshTokenService {
     @Transactional
     public Long createUser(String id, String nickname, String email){
         Users newUser = Users.builder()
-                .social(id)
+                .socialLink(id)
                 .nickname(nickname)
                 .name(nickname)
                 .email(email)
@@ -176,10 +191,17 @@ public class RefreshTokenService {
         return tokenDto;
     }
 
-    public String regenerateAccessToken(RefreshTokenRequestDto request){
+    public String regenerateUserAccessToken(RefreshTokenRequestDto request){
         RefreshToken refreshToken = refreshTokenRepository.findByValue(request.getRefreshToken()).orElseThrow(()-> new GeneralHandler(ErrorStatus.INVALID_REFRESH_TOKEN));
         Users user = usersRepository.findByEmail(refreshToken.getKey()).orElseThrow(()-> new UsersHandler(ErrorStatus.JWT_NO_USER_INFO));
 
-        return jwtProvider.regenerateAccessToken(user);
+        return jwtProvider.regenerateUserAccessToken(user);
+    }
+
+    public String regenerateAdminAccessToken(RefreshTokenRequestDto request){
+        RefreshToken refreshToken = refreshTokenRepository.findByValue(request.getRefreshToken()).orElseThrow(()-> new GeneralHandler(ErrorStatus.INVALID_REFRESH_TOKEN));
+        Users user = usersRepository.findByEmail(refreshToken.getKey()).orElseThrow(()-> new UsersHandler(ErrorStatus.JWT_NO_USER_INFO));
+
+        return jwtProvider.regenerateAdminAccessToken(user);
     }
 }
