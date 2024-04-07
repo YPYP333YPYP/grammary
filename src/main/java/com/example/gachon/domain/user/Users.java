@@ -27,7 +27,10 @@ public class Users extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(unique = true)
     private String social;
+
+    private String socialLink;
 
     private String password;
 
