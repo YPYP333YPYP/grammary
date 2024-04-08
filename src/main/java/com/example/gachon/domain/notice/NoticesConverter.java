@@ -1,8 +1,7 @@
 package com.example.gachon.domain.notice;
 
 import com.example.gachon.domain.notice.dto.response.NoticeResponseDto;
-import com.example.gachon.domain.user.Users;
-import com.example.gachon.domain.user.dto.response.UserResponseDto;
+
 
 public class NoticesConverter {
 
@@ -11,6 +10,17 @@ public class NoticesConverter {
                 .noticeId(notices.getId())
                 .title(notices.getTitle())
                 .content(notices.getContent())
+                .category(notices.getCategory())
+                .isPinned(notices.isPinned())
+                .created_at(notices.getCreatedAt())
+                .updated_at(notices.getUpdatedAt())
+                .build();
+    }
+
+    public static NoticeResponseDto.NoticePreviewDto toNoticePreviewDto(Notices notices){
+        return NoticeResponseDto.NoticePreviewDto.builder()
+                .noticeId(notices.getId())
+                .title(notices.getTitle())
                 .category(notices.getCategory())
                 .isPinned(notices.isPinned())
                 .created_at(notices.getCreatedAt())

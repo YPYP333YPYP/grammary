@@ -9,6 +9,5 @@ import java.util.Optional;
 @Repository
 public interface NoticesRepository extends JpaRepository<Notices, Long> {
 
-    List<Notices> findAllById(Long noticeId);
 
 }
