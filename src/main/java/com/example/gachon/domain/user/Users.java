@@ -1,12 +1,12 @@
 package com.example.gachon.domain.user;
 
-import com.example.gachon.domain.sentence.Sentences;
+import com.example.gachon.domain.history.Histories;
 import com.example.gachon.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -49,7 +49,7 @@ public class Users extends BaseEntity {
     private Status status;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Sentences> sentences = new ArrayList<>();
+    private Set<Histories> histories = new HashSet<>();
 
 
 }

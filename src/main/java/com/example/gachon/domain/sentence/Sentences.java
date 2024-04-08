@@ -6,8 +6,8 @@ import com.example.gachon.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -39,5 +39,5 @@ public class Sentences extends BaseEntity {
     private String grammar;
 
     @OneToMany(mappedBy = "sentence", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Histories> histories = new ArrayList<>();
+    private Set<Histories> histories = new HashSet<>();
 }

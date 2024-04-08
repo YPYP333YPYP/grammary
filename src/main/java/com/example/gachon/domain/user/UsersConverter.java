@@ -1,7 +1,12 @@
 package com.example.gachon.domain.user;
 
+import com.example.gachon.domain.history.Histories;
+import com.example.gachon.domain.sentence.Sentences;
 import com.example.gachon.domain.token.dto.request.SignUpRequestDto;
 import com.example.gachon.domain.user.dto.response.UserResponseDto;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UsersConverter {
 
@@ -43,6 +48,24 @@ public class UsersConverter {
                 .profileUrl(user.getProfileUrl())
                 .phoneNum(user.getPhoneNum())
                 .social(user.getSocial())
+                .build();
+    }
+
+    public static UserResponseDto.UserHistoryDto toUserHistoryDto(Sentences sentence){
+        return UserResponseDto.UserHistoryDto.builder()
+                .sentenceId(sentence.getId())
+                .content(sentence.getContent())
+                .build();
+    }
+
+    public static UserResponseDto.UserHistoryListDto toUserHistoryListDto(List<Sentences> sentences, Long userId){
+        List<UserResponseDto.UserHistoryDto> userHistoryDtoList = sentences.stream()
+                .map(UsersConverter::toUserHistoryDto)
+                .toList();
+
+        return UserResponseDto.UserHistoryListDto.builder()
+                .userId(userId)
+                .userHistoryDtoList(userHistoryDtoList)
                 .build();
     }
 }

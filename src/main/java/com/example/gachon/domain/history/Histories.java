@@ -1,6 +1,7 @@
 package com.example.gachon.domain.history;
 
 import com.example.gachon.domain.sentence.Sentences;
+import com.example.gachon.domain.user.Users;
 import com.example.gachon.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,6 +24,10 @@ public class Histories extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sentence_id")
     private Sentences sentence;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Users user;
 
     @Column(nullable = false)
     private LocalDateTime timestamp;
