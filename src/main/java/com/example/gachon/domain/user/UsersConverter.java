@@ -41,6 +41,8 @@ public class UsersConverter {
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .profileUrl(user.getProfileUrl())
+                .phoneNum(user.getPhoneNum())
+                .social(user.getSocial())
                 .build();
     }
 }

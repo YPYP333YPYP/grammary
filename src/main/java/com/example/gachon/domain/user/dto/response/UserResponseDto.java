@@ -14,6 +14,8 @@ public class UserResponseDto {
         private String name;
         private String nickname;
         private String profileUrl;
+        private String phoneNum;
+        private String social;
 
     }
 }
