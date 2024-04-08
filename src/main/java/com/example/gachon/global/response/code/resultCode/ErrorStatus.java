@@ -33,6 +33,9 @@ public enum ErrorStatus implements BaseErrorCode {
     USER_ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "USER414", "존재하지 않는 계정입니다."),
     USER_EMAIL_PASSWORD_NOT_EMPTY(HttpStatus.BAD_REQUEST, "USER415", "이메일 또는 비밀번호를 입력하지 않았습니다."),
 
+    // Notice
+    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTICE404", "공지 사항을 찾을 수 없습니다."),
+
 
     // OAuth
     EXPIRED_JWT_EXCEPTION(HttpStatus.UNAUTHORIZED, "OAUTH401", "기존 토큰이 만료되었습니다. 토큰을 재발급해주세요."),
