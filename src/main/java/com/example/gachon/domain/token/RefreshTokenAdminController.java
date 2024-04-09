@@ -49,7 +49,7 @@ public class RefreshTokenAdminController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER415", description = "이메일 또는 비밀번호를 입력하지 않았습니다."),
     })
     public ApiResponse<TokenDto> login(@RequestBody LoginRequestDto loginRequestDto) {
-        return ApiResponse.onSuccess(refreshTokenService.login(loginRequestDto));
+        return ApiResponse.onSuccess(refreshTokenService.adminLogin(loginRequestDto));
     }
 
     @PostMapping("/refresh")

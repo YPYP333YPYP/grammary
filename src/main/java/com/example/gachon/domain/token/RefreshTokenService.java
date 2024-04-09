@@ -86,7 +86,7 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public TokenDto login(LoginRequestDto loginRequestDto) {
+    public TokenDto userLogin(LoginRequestDto loginRequestDto) {
         if (!StringUtils.hasText(loginRequestDto.getEmail()) || !StringUtils.hasText(loginRequestDto.getPassword())) {
             throw new UsersHandler(ErrorStatus.USER_EMAIL_PASSWORD_NOT_EMPTY);
         }
@@ -104,6 +104,40 @@ public class RefreshTokenService {
 
             // 4. 인증 정보를 기반으로 JWT 토큰 생성
             TokenDto tokenDto = jwtProvider.generateUserToken(authentication, userId.toString());
+            // 5. RefreshToken 저장
+            RefreshToken refreshToken = RefreshToken.builder()
+                    .key(authentication.getName())
+                    .value(tokenDto.getRefreshToken())
+                    .build();
+
+            refreshTokenRepository.save(refreshToken);
+            return tokenDto;
+        } catch (BadCredentialsException e) {
+            throw new UsersHandler(ErrorStatus.USER_FAILED_TO_PASSWORD);
+        } catch (AuthenticationException e) {
+            throw new UsersHandler(ErrorStatus.USER_NOT_FOUND);
+        }
+    }
+
+    @Transactional
+    public TokenDto adminLogin(LoginRequestDto loginRequestDto) {
+        if (!StringUtils.hasText(loginRequestDto.getEmail()) || !StringUtils.hasText(loginRequestDto.getPassword())) {
+            throw new UsersHandler(ErrorStatus.USER_EMAIL_PASSWORD_NOT_EMPTY);
+        }
+
+        try {
+            // 1. Login ID/PW를 기반으로 AuthenticationToken 생성
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+
+            // 2. authentication이 실행이 될 때, UserDetailsServiceImpl 에서 만들었던 loadUserByUsername 메서드가 실행됨
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+            // 3. UserDetailsImpl에서 직접 userId 가져오기
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            Long userId = userDetails.getUserId();
+
+            // 4. 인증 정보를 기반으로 JWT 토큰 생성
+            TokenDto tokenDto = jwtProvider.generateAdminToken(authentication, userId.toString());
             // 5. RefreshToken 저장
             RefreshToken refreshToken = RefreshToken.builder()
                     .key(authentication.getName())

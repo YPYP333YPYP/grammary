@@ -37,7 +37,7 @@ public class RefreshTokenUserController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER411", description = "이미 존재하는 닉네임입니다.", content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
     public ApiResponse<SuccessStatus> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
-        refreshTokenService.adminSignUp(signUpRequestDto);
+        refreshTokenService.userSignUp(signUpRequestDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 
@@ -49,7 +49,7 @@ public class RefreshTokenUserController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER415", description = "이메일 또는 비밀번호를 입력하지 않았습니다."),
     })
     public ApiResponse<TokenDto> login(@RequestBody LoginRequestDto loginRequestDto) {
-        return ApiResponse.onSuccess(refreshTokenService.login(loginRequestDto));
+        return ApiResponse.onSuccess(refreshTokenService.userLogin(loginRequestDto));
     }
 
     @PostMapping("/refresh")
