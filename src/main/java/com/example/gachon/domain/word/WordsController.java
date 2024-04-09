@@ -1,11 +1,12 @@
 package com.example.gachon.domain.word;
 
 
-import com.example.gachon.domain.user.dto.response.UserResponseDto;
+
 import com.example.gachon.domain.word.dto.response.WordResponseDto;
 import com.example.gachon.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+@Tag(name = "word-controller", description = "사용자 단어 관련 API")
 
 @RestController
 @RequiredArgsConstructor
