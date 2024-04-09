@@ -4,7 +4,7 @@ import com.example.gachon.domain.sentence.dto.response.SentenceResponseDto;
 import com.example.gachon.domain.sentenceInfo.SentenceInfo;
 import com.example.gachon.domain.sentenceInfo.SentenceInfoRepository;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
-import com.example.gachon.global.response.exception.handler.SentenceHandler;
+import com.example.gachon.global.response.exception.handler.SentencesHandler;
 import com.example.gachon.global.response.exception.handler.UsersHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class SentencesService {
     private final SentenceInfoRepository sentenceInfoRepository;
 
     SentenceResponseDto.SentenceInfoDto getSentenceInfo(Long sentenceId) {
-        SentenceInfo sentenceInfo = sentenceInfoRepository.findBySentenceId(sentenceId).orElseThrow(() -> new SentenceHandler(ErrorStatus.SENTENCE_INFO_NOT_FOUND));
+        SentenceInfo sentenceInfo = sentenceInfoRepository.findBySentenceId(sentenceId).orElseThrow(() -> new SentencesHandler(ErrorStatus.SENTENCE_INFO_NOT_FOUND));
         Sentences sentence = sentencesRepository.findById(sentenceId).orElseThrow(()->new UsersHandler(ErrorStatus.USER_NOT_FOUND));
 
         return SentencesConverter.toSentenceInfoDto(sentence, sentenceInfo);
@@ -30,11 +30,11 @@ public class SentencesService {
     SentenceResponseDto.SentenceInfoDto getRecommendSentence(String grammar, String difficulty) {
         List<Sentences> sentences = sentencesRepository.findAllByGrammarAndDifficulty(grammar, difficulty);
         if (sentences.isEmpty()) {
-            throw new SentenceHandler(ErrorStatus.SENTENCE_NOT_FOUND);
+            throw new SentencesHandler(ErrorStatus.SENTENCE_NOT_FOUND);
         }
         int randomIndex = (int)(Math.random() * sentences.size());
         Sentences sentence = sentences.get(randomIndex);
-        SentenceInfo sentenceInfo = sentenceInfoRepository.findBySentenceId(sentence.getId()).orElseThrow(() -> new SentenceHandler(ErrorStatus.SENTENCE_INFO_NOT_FOUND));
+        SentenceInfo sentenceInfo = sentenceInfoRepository.findBySentenceId(sentence.getId()).orElseThrow(() -> new SentencesHandler(ErrorStatus.SENTENCE_INFO_NOT_FOUND));
 
         return SentencesConverter.toSentenceInfoDto(sentence, sentenceInfo);
     }
