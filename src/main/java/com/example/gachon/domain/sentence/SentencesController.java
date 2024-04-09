@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,5 +30,17 @@ public class SentencesController {
     public ApiResponse<SentenceResponseDto.SentenceInfoDto> getSentenceInfo(@PathVariable Long sentenceId){
 
         return ApiResponse.onSuccess(sentencesService.getSentenceInfo(sentenceId));
+    }
+
+    @GetMapping("/{grammar}/{difficulty}/recommend")
+    @Operation(summary = "유사한 문장 정보 조회 API ",description = " 유사한 문장 정보를 가져오기, SentenceInfoDto, SentenceComponentInfoDto 이용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<SentenceResponseDto.SentenceInfoDto> getRecommendSentence(@PathVariable String grammar,
+                                                                                 @PathVariable String difficulty){
+
+        return ApiResponse.onSuccess(sentencesService.getRecommendSentence(grammar, difficulty));
     }
 }
