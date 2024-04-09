@@ -45,11 +45,15 @@ public enum ErrorStatus implements BaseErrorCode {
     // Note
     NOTE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTE404", "노트를 찾을 수 없습니다"),
 
-    //
+    // Inquiry
     INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY404", "문의를 찾을 수 없습니다"),
 
     // OAuth
     EXPIRED_JWT_EXCEPTION(HttpStatus.UNAUTHORIZED, "OAUTH401", "기존 토큰이 만료되었습니다. 토큰을 재발급해주세요."),
+
+    // Image
+    IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE401", "파일이 존재하지 않습니다."),
+    IMAGE_UPLOAD_FAIL(HttpStatus.BAD_REQUEST, "IMAGE402", "이미지 업로드에 실패하였습니다."),
 
     // JWT
     INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH401", "유효하지 않은 ACCESS 토큰입니다."),

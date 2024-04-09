@@ -1,27 +1,30 @@
 package com.example.gachon.domain.sentence;
 
+import com.example.gachon.domain.lmage.ImagesService;
 import com.example.gachon.domain.sentence.dto.response.SentenceResponseDto;
-import com.example.gachon.domain.user.dto.response.UserResponseDto;
 import com.example.gachon.global.response.ApiResponse;
+import com.example.gachon.global.response.code.resultCode.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-@Tag(name = "sentence-controller", description = "사용자 문장 관련 API")
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+@Tag(name = "sentence-controller", description = "사용자 문장 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/sentences")
 public class SentencesController {
 
     private final SentencesService sentencesService;
+    private final ImagesService imagesService;
 
     @GetMapping("/{sentenceId}/info")
     @Operation(summary = "문장 정보 조회 API ",description = " 문장 정보를 가져오기, SentenceInfoDto, SentenceComponentInfoDto 이용")
@@ -44,5 +47,19 @@ public class SentencesController {
                                                                                  @PathVariable String difficulty){
 
         return ApiResponse.onSuccess(sentencesService.getRecommendSentence(grammar, difficulty));
+    }
+
+    @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "문장 이미지 업로드 API ",description = "문장 이미지를 업로드한다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "IMAGE402", description = "이미지 업로드 실패",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+
+    })
+
+    public ApiResponse<SuccessStatus> uploadImage(@RequestParam MultipartFile file
+                                                , @AuthenticationPrincipal UserDetails user) {
+        imagesService.uploadImage(file, user.getUsername());
+        return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 }
