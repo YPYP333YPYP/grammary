@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @Tag(name = "word-controller", description = "사용자 단어 관련 API")
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/words")

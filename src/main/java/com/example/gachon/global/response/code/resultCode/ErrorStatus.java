@@ -45,6 +45,9 @@ public enum ErrorStatus implements BaseErrorCode {
     // Note
     NOTE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTE404", "노트를 찾을 수 없습니다"),
 
+    //
+    INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY404", "문의를 찾을 수 없습니다"),
+
     // OAuth
     EXPIRED_JWT_EXCEPTION(HttpStatus.UNAUTHORIZED, "OAUTH401", "기존 토큰이 만료되었습니다. 토큰을 재발급해주세요."),
 
