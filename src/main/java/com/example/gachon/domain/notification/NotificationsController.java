@@ -1,6 +1,5 @@
 package com.example.gachon.domain.notification;
 
-import com.example.gachon.domain.notice.dto.response.NoticeResponseDto;
 import com.example.gachon.domain.notification.dto.response.NotificationResponseDto;
 import com.example.gachon.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
