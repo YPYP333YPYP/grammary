@@ -62,4 +62,18 @@ public class SentencesController {
         imagesService.uploadImage(file, user.getUsername());
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
+
+    @PostMapping(path = "/input")
+    @Operation(summary = "문장 직접 입력 API ",description = "문장을 직접 입력 한다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+
+    })
+
+    public ApiResponse<SuccessStatus> uploadImage(@RequestParam String sentence
+            , @AuthenticationPrincipal UserDetails user) {
+        sentencesService.inputSentence(sentence, user.getUsername());
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
 }

@@ -32,10 +32,10 @@ public class Sentences extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String difficulty;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String grammar;
 
     @OneToMany(mappedBy = "sentence", cascade = CascadeType.ALL, orphanRemoval = true)

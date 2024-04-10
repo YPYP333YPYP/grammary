@@ -1,8 +1,12 @@
 package com.example.gachon.domain.sentence;
 
+import com.example.gachon.domain.history.Histories;
+import com.example.gachon.domain.history.HistoriesRepository;
 import com.example.gachon.domain.sentence.dto.response.SentenceResponseDto;
 import com.example.gachon.domain.sentenceInfo.SentenceInfo;
 import com.example.gachon.domain.sentenceInfo.SentenceInfoRepository;
+import com.example.gachon.domain.user.Users;
+import com.example.gachon.domain.user.UsersRepository;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
 import com.example.gachon.global.response.exception.handler.SentencesHandler;
 import com.example.gachon.global.response.exception.handler.UsersHandler;
@@ -10,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,6 +24,8 @@ public class SentencesService {
 
     private final SentencesRepository sentencesRepository;
     private final SentenceInfoRepository sentenceInfoRepository;
+    private final UsersRepository usersRepository;
+    private final HistoriesRepository historiesRepository;
 
     SentenceResponseDto.SentenceInfoDto getSentenceInfo(Long sentenceId) {
         SentenceInfo sentenceInfo = sentenceInfoRepository.findBySentenceId(sentenceId).orElseThrow(() -> new SentencesHandler(ErrorStatus.SENTENCE_INFO_NOT_FOUND));
@@ -37,5 +44,26 @@ public class SentencesService {
         SentenceInfo sentenceInfo = sentenceInfoRepository.findBySentenceId(sentence.getId()).orElseThrow(() -> new SentencesHandler(ErrorStatus.SENTENCE_INFO_NOT_FOUND));
 
         return SentencesConverter.toSentenceInfoDto(sentence, sentenceInfo);
+    }
+
+    @Transactional
+    public void inputSentence(String sentence, String email) {
+        Users user = usersRepository.findByEmail(email).orElseThrow(()-> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        Sentences sentenceObject = Sentences.builder()
+                .content(sentence)
+                .type("USER")
+                .build();
+
+        sentencesRepository.save(sentenceObject);
+
+        Histories histories = Histories.builder()
+                .user(user)
+                .sentence(sentenceObject)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        historiesRepository.save(histories);
+
     }
 }
