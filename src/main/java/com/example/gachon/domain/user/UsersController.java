@@ -80,4 +80,15 @@ public class UsersController {
         usersService.updateUserNickname(usersService.getUserId(user), userNicknameDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
+
+    @PatchMapping("/me/quit")
+    @Operation(summary = "회원 탈퇴 API", description = "회원 탈퇴 하기")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER404", description = "유저가 존재하지 않습니다", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+    })
+    public ApiResponse<SuccessStatus> quitUser(@AuthenticationPrincipal UserDetails user) {
+        usersService.quitUser(usersService.getUserId(user));
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
 }

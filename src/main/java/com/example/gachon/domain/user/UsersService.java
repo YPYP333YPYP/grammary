@@ -84,4 +84,12 @@ public class UsersService {
         usersRepository.save(user);
 
     }
+
+    @Transactional
+    public void quitUser(Long userId) {
+        Users user = usersRepository.findById(userId).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        user.setStatus(Status.DISABLED);
+        usersRepository.save(user);
+    }
 }
