@@ -57,4 +57,18 @@ public class NotesController {
         notesService.createNoteMemo(user.getUsername(), noteDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
+
+    @PatchMapping("/memo/{noteId}/update")
+    @Operation(summary = "학습 노트 메모 수정 요청 API ",description = "학습 노트에 메모 수정 하기, NoteDto 이용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<SuccessStatus> updateNoteMemo(@AuthenticationPrincipal UserDetails user,
+                                                     @RequestBody NoteRequestDto.NoteDto noteDto,
+                                                     @PathVariable Long noteId){
+        notesService.updateNoteMemo(noteDto, noteId);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
 }

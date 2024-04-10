@@ -10,6 +10,7 @@ import com.example.gachon.domain.user.Users;
 import com.example.gachon.domain.user.UsersConverter;
 import com.example.gachon.domain.user.UsersRepository;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
+import com.example.gachon.global.response.exception.handler.MemosHandler;
 import com.example.gachon.global.response.exception.handler.NotesHandler;
 import com.example.gachon.global.response.exception.handler.SentencesHandler;
 import com.example.gachon.global.response.exception.handler.UsersHandler;
@@ -57,6 +58,17 @@ public class NotesService {
                 .title(noteDto.getTitle())
                 .content(noteDto.getContent())
                 .build();
+
+        memosRepository.save(memo);
+    }
+
+    @Transactional
+    public void updateNoteMemo(NoteRequestDto.NoteDto noteDto, Long noteId) {
+        Notes note = notesRepository.findById(noteId).orElseThrow(()-> new NotesHandler(ErrorStatus.NOTE_NOT_FOUND));
+        Memos memo = memosRepository.findByNote(note).orElseThrow(() -> new MemosHandler(ErrorStatus.MEMO_NOT_FOUND));
+
+        memo.setTitle(noteDto.getTitle());
+        memo.setContent(noteDto.getContent());
 
         memosRepository.save(memo);
     }
