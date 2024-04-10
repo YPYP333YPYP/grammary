@@ -10,4 +10,5 @@ import java.util.List;
 public interface NotificationsRepository extends JpaRepository<Notifications, Long> {
 
     List<Notifications> getAllByUser (Users user);
+
 }

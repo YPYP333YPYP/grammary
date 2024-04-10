@@ -59,6 +59,10 @@ public enum ErrorStatus implements BaseErrorCode {
     // Memo
     MEMO_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMO404", "메모를 찾을 수 없습니다"),
 
+    // Notification
+    NOTIFICATION_ALREADY_READ(HttpStatus.BAD_REQUEST, "NF401", "이미 확인한 알람입니다."),
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NF404","알람을 찾을 수 없습니다."),
+
 
     // JWT
     INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH401", "유효하지 않은 ACCESS 토큰입니다."),
