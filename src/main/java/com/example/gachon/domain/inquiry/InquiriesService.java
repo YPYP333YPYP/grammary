@@ -1,5 +1,6 @@
 package com.example.gachon.domain.inquiry;
 
+import com.example.gachon.domain.inquiry.dto.request.InquiryRequestDto;
 import com.example.gachon.domain.inquiry.dto.response.InquiryResponseDto;
 import com.example.gachon.domain.user.Users;
 import com.example.gachon.domain.user.UsersRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,5 +36,18 @@ public class InquiriesService {
         return inquiries.stream()
                 .map(InquiriesConverter::toInquiryInfoDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void createInquiry(String email, InquiryRequestDto.InquiryDto inquiryDto) {
+        Users user = usersRepository.findByEmail(email).orElseThrow(()->new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        Inquiries inquiry = Inquiries.builder()
+                .user(user)
+                .requestMessage(inquiryDto.getRequest())
+                .requestTimestamp(LocalDateTime.now())
+                .build();
+
+        inquiriesRepository.save(inquiry);
     }
 }
