@@ -72,4 +72,10 @@ public class NotesService {
 
         memosRepository.save(memo);
     }
+
+    @Transactional
+    public void deleteNote(Long noteId) {
+        Notes note = notesRepository.findById(noteId).orElseThrow(()-> new NotesHandler(ErrorStatus.NOTE_NOT_FOUND));
+        notesRepository.delete(note);
+    }
 }

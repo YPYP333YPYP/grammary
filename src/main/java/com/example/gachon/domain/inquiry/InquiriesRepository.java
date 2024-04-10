@@ -12,4 +12,6 @@ public interface InquiriesRepository extends JpaRepository<Inquiries, Long> {
 
     Optional<Inquiries> findById(Long id);
     List<Inquiries> findAllByUser(Users user);
+
+    Inquiries findByUserAndId(Users user, Long id);
 }

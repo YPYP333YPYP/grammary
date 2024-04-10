@@ -83,4 +83,13 @@ public class SentencesService {
 
         notesRepository.save(note);
     }
+
+    @Transactional
+    public void deleteHistory(Long sentenceId, String email) {
+        Users user = usersRepository.findByEmail(email).orElseThrow(()-> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+        Sentences sentence = sentencesRepository.findById(sentenceId).orElseThrow(()-> new SentencesHandler(ErrorStatus.SENTENCE_NOT_FOUND));
+        Histories history = historiesRepository.findByUserAndSentence(user, sentence);
+
+        historiesRepository.delete(history);
+    }
 }

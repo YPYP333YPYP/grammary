@@ -71,4 +71,16 @@ public class NotesController {
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 
+    @DeleteMapping ("/{noteId}/delete")
+    @Operation(summary = "학습 노트 삭제 요청 API ",description = "학습 노트 삭제 하기")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<SuccessStatus> deleteNote(@AuthenticationPrincipal UserDetails user,
+                                                 @PathVariable Long noteId){
+        notesService.deleteNote(noteId);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
 }

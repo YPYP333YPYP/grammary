@@ -50,4 +50,12 @@ public class InquiriesService {
 
         inquiriesRepository.save(inquiry);
     }
+
+    @Transactional
+    public void deleteInquiry(String email, Long inquiryId) {
+        Users user = usersRepository.findByEmail(email).orElseThrow(()->new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+        Inquiries inquiry = inquiriesRepository.findByUserAndId(user, inquiryId);
+
+        inquiriesRepository.delete(inquiry);
+    }
 }

@@ -90,4 +90,15 @@ public class SentencesController {
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 
+    @DeleteMapping ("/history/{sentenceId}/delete")
+    @Operation(summary = "검색 내역 삭제 요청 API ",description = "검색 내역 삭제 하기")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<SuccessStatus> deleteHistory(@AuthenticationPrincipal UserDetails user,
+                                                 @PathVariable Long sentenceId){
+        sentencesService.deleteHistory(sentenceId, user.getUsername());
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
 }
