@@ -84,9 +84,9 @@ public class SentencesController {
 
     })
 
-    public ApiResponse<SuccessStatus> sentOutNote(@RequestBody SentenceRequestDto.SentenceNoteDto sentenceNoteDto
+    public ApiResponse<SuccessStatus> sentOutNote(@RequestParam Long sentenceId
                                                   , @AuthenticationPrincipal UserDetails user) {
-        sentencesService.sentOutNote(sentenceNoteDto, user.getUsername());
+        sentencesService.sentOutNote(sentenceId, user.getUsername());
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 

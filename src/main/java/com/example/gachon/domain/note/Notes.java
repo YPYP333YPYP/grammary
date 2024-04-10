@@ -28,9 +28,9 @@ public class Notes extends BaseEntity {
     @JoinColumn(name = "sentence_id")
     private Sentences sentence;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String content;
 }

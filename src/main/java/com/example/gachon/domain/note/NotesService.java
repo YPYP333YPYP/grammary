@@ -1,5 +1,8 @@
 package com.example.gachon.domain.note;
 
+import com.example.gachon.domain.memo.Memos;
+import com.example.gachon.domain.memo.MemosRepository;
+import com.example.gachon.domain.note.dto.request.NoteRequestDto;
 import com.example.gachon.domain.note.dto.response.NoteResponseDto;
 import com.example.gachon.domain.sentenceInfo.SentenceInfo;
 import com.example.gachon.domain.sentenceInfo.SentenceInfoRepository;
@@ -25,6 +28,7 @@ public class NotesService {
     private final UsersRepository usersRepository;
     private final NotesRepository notesRepository;
     private final SentenceInfoRepository sentenceInfoRepository;
+    private final MemosRepository memosRepository;
 
     NoteResponseDto.NoteInfoDto getNoteInfo(Long noteId) {
         Notes note = notesRepository.findById(noteId).orElseThrow(()-> new NotesHandler(ErrorStatus.NOTE_NOT_FOUND));
@@ -41,5 +45,19 @@ public class NotesService {
         return notes.stream()
                 .map(NotesConverter::toNotePreviewDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void createNoteMemo(String email, NoteRequestDto.NoteDto noteDto) {
+        Users user = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+        Notes note = notesRepository.findByUserAndSentenceId(user, noteDto.getSentenceId()).orElseThrow(() -> new NotesHandler(ErrorStatus.NOTE_NOT_FOUND));
+
+        Memos memo = Memos.builder()
+                .note(note)
+                .title(noteDto.getTitle())
+                .content(noteDto.getContent())
+                .build();
+
+        memosRepository.save(memo);
     }
 }

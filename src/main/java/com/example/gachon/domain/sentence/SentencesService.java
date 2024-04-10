@@ -72,15 +72,13 @@ public class SentencesService {
     }
 
     @Transactional
-    public void sentOutNote(SentenceRequestDto.SentenceNoteDto sentenceNoteDto, String email) {
+    public void sentOutNote(Long sentenceId, String email) {
         Users user = usersRepository.findByEmail(email).orElseThrow(()-> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
-        Sentences sentence = sentencesRepository.findById(sentenceNoteDto.getSentenceId()).orElseThrow(()-> new SentencesHandler(ErrorStatus.SENTENCE_NOT_FOUND));
+        Sentences sentence = sentencesRepository.findById(sentenceId).orElseThrow(()-> new SentencesHandler(ErrorStatus.SENTENCE_NOT_FOUND));
 
         Notes note = Notes.builder()
                 .sentence(sentence)
                 .user(user)
-                .title(sentenceNoteDto.getTitle())
-                .content(sentenceNoteDto.getContent())
                 .build();
 
         notesRepository.save(note);
