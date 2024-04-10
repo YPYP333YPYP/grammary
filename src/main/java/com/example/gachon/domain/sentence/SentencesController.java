@@ -1,6 +1,7 @@
 package com.example.gachon.domain.sentence;
 
 import com.example.gachon.domain.lmage.ImagesService;
+import com.example.gachon.domain.sentence.dto.request.SentenceRequestDto;
 import com.example.gachon.domain.sentence.dto.response.SentenceResponseDto;
 import com.example.gachon.global.response.ApiResponse;
 import com.example.gachon.global.response.code.resultCode.SuccessStatus;
@@ -73,6 +74,19 @@ public class SentencesController {
     public ApiResponse<SuccessStatus> uploadImage(@RequestParam String sentence
             , @AuthenticationPrincipal UserDetails user) {
         sentencesService.inputSentence(sentence, user.getUsername());
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
+    @PostMapping(path = "/note")
+    @Operation(summary = "문장 학습 노트 저장 API ",description = "문장을 학습 노트에 저장한다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+
+    })
+
+    public ApiResponse<SuccessStatus> sentOutNote(@RequestBody SentenceRequestDto.SentenceNoteDto sentenceNoteDto
+                                                  , @AuthenticationPrincipal UserDetails user) {
+        sentencesService.sentOutNote(sentenceNoteDto, user.getUsername());
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 

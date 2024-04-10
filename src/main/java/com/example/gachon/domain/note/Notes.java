@@ -29,5 +29,8 @@ public class Notes extends BaseEntity {
     private Sentences sentence;
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private String content;
 }
