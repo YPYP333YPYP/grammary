@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 @Tag(name = "admin-notice-controller", description = "관리자 공지 사항 관련 API")
 @RestController
@@ -31,5 +33,16 @@ public class NoticesAdminController {
     public ApiResponse<NoticeResponseDto.NoticeInfoDto> getNoticeInfoByAdmin(@AuthenticationPrincipal UserDetails user, @PathVariable Long noticeId) {
 
         return ApiResponse.onSuccess(noticesService.getNoticeInfoByAdmin(user.getUsername(), noticeId));
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "모든 공지 사항 조회 API ",description = " 모든 공지사항 리스트 가져오기, NoticePreviewDto 이용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<List<NoticeResponseDto.NoticePreviewDto>> getNoticePreviewListByAdmin(@AuthenticationPrincipal UserDetails user){
+
+        return ApiResponse.onSuccess(noticesService.getNoticePreviewListByAdmin(user.getUsername()));
     }
 }

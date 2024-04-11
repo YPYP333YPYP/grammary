@@ -10,6 +10,7 @@ import com.example.gachon.global.response.exception.handler.GeneralHandler;
 import com.example.gachon.global.response.exception.handler.NoticesHandler;
 import com.example.gachon.global.response.exception.handler.UsersHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,5 +49,19 @@ public class NoticesService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
 
+    }
+
+    public List<NoticeResponseDto.NoticePreviewDto> getNoticePreviewListByAdmin(String email) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            List<Notices> notices = noticesRepository.findAll();
+
+            return notices.stream()
+                    .map(NoticesConverter::toNoticePreviewDto)
+                    .collect(Collectors.toList());
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
     }
 }
