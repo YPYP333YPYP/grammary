@@ -1,5 +1,6 @@
 package com.example.gachon.domain.user.dto.response;
 
+import com.example.gachon.domain.notification.dto.response.NotificationResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +41,16 @@ public class UserResponseDto {
     public static class UserHistoryListDto{
         private Long userId;
         private List<UserHistoryDto> userHistoryDtoList;
+
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserNotificationListDto{
+        private Long userId;
+        private List<NotificationResponseDto.NotificationInfoDto> notificationInfoList;
 
     }
 

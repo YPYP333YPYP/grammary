@@ -11,4 +11,5 @@ public interface NotificationsRepository extends JpaRepository<Notifications, Lo
 
     List<Notifications> getAllByUser (Users user);
 
+    List<Notifications> findAllByUser(Users user);
 }

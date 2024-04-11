@@ -4,6 +4,8 @@ import com.example.gachon.domain.lmage.Images;
 import com.example.gachon.domain.history.Histories;
 import com.example.gachon.domain.history.HistoriesRepository;
 import com.example.gachon.domain.lmage.ImagesRepository;
+import com.example.gachon.domain.notification.Notifications;
+import com.example.gachon.domain.notification.NotificationsRepository;
 import com.example.gachon.domain.sentence.Sentences;
 import com.example.gachon.domain.sentence.SentencesRepository;
 import com.example.gachon.domain.user.dto.request.UserRequestDto;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.gachon.global.security.UserDetailsServiceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -33,6 +36,7 @@ public class UsersService {
     private final HistoriesRepository historiesRepository;
     private final SentencesRepository sentencesRepository;
     private final ImagesRepository imagesRepository;
+    private final NotificationsRepository notificationsRepository;
 
     public Long getUserId(UserDetails user){
         String username = user.getUsername();
@@ -100,6 +104,36 @@ public class UsersService {
         if (Objects.equals(reqUser.getRole(), "ADMIN")) {
             Users user = usersRepository.findById(userId).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
             return UsersConverter.toUserInfoDto(user);
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+
+    }
+
+    public UserResponseDto.UserNotificationListDto getUserNotificationByAdmin(String email, Long userId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Users user = usersRepository.findById(userId).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+            List<Notifications> notifications = notificationsRepository.findAllByUser(user);
+
+            return UsersConverter.touserNotificationListDto(notifications, user.getId());
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+
+    public List<Long> getUserHistoryByAdmin(String email, Long userId){
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Users user = usersRepository.findById(userId).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+            List<Histories> histories = historiesRepository.findAllByUser(user);
+
+            return histories.stream()
+                    .map(Histories::getSentence)
+                    .map(Sentences::getId)
+                    .toList();
         } else {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }

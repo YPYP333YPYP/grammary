@@ -1,10 +1,14 @@
 package com.example.gachon.domain.user;
 
 import com.example.gachon.domain.history.Histories;
+import com.example.gachon.domain.notification.Notifications;
+import com.example.gachon.domain.notification.NotificationsConverter;
+import com.example.gachon.domain.notification.dto.response.NotificationResponseDto;
 import com.example.gachon.domain.sentence.Sentences;
 import com.example.gachon.domain.token.dto.request.SignUpRequestDto;
 import com.example.gachon.domain.user.dto.response.UserResponseDto;
 
+import javax.management.Notification;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,6 +70,17 @@ public class UsersConverter {
         return UserResponseDto.UserHistoryListDto.builder()
                 .userId(userId)
                 .userHistoryDtoList(userHistoryDtoList)
+                .build();
+    }
+
+    public static UserResponseDto.UserNotificationListDto touserNotificationListDto(List<Notifications> notifications, Long userId) {
+        List<NotificationResponseDto.NotificationInfoDto> notificationInfoDtoList = notifications.stream()
+                .map(NotificationsConverter::toNotificationInfoDto)
+                .toList();
+
+        return UserResponseDto.UserNotificationListDto.builder()
+                .userId(userId)
+                .notificationInfoList(notificationInfoDtoList)
                 .build();
     }
 }
