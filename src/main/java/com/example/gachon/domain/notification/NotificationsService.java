@@ -1,9 +1,12 @@
 package com.example.gachon.domain.notification;
 
+import com.example.gachon.domain.notice.Notices;
+import com.example.gachon.domain.notice.NoticesConverter;
 import com.example.gachon.domain.notification.dto.response.NotificationResponseDto;
 import com.example.gachon.domain.user.Users;
 import com.example.gachon.domain.user.UsersRepository;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
+import com.example.gachon.global.response.exception.handler.GeneralHandler;
 import com.example.gachon.global.response.exception.handler.NotificationsHandler;
 import com.example.gachon.global.response.exception.handler.UsersHandler;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,6 +46,50 @@ public class NotificationsService {
         } else {
             notification.setRead(true);
             notificationsRepository.save(notification);
+        }
+    }
+
+    public NotificationResponseDto.NotificationInfoListDto getAllNotificationInfo(String email) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            List<Notifications> notifications = notificationsRepository.findAll();
+
+            return NotificationsConverter.toNotificationInfoListDto(notifications);
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+
+    public NotificationResponseDto.NotificationInfoDto getNotificationInfoByAdmin(String email, Long notificationId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Notifications notification = notificationsRepository.findById(notificationId).orElseThrow(()->new NotificationsHandler(ErrorStatus.NOTIFICATION_NOT_FOUND));
+
+            return NotificationsConverter.toNotificationInfoDto(notification);
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+
+
+    }
+
+    @Transactional
+    public void sendOut(String email, Long notificationId, Long userId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Notifications notification = notificationsRepository.findById(notificationId).orElseThrow(()->new NotificationsHandler(ErrorStatus.NOTIFICATION_NOT_FOUND));
+            Users user = usersRepository.findById(userId).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+            notification.setUser(user);
+            notificationsRepository.save(notification);
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
 }
