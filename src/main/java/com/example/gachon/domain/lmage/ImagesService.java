@@ -5,6 +5,8 @@ import com.example.gachon.domain.user.UsersRepository;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
 import com.example.gachon.global.response.exception.handler.ImagesHandler;
 import com.example.gachon.global.response.exception.handler.UsersHandler;
+import com.example.gachon.global.s3.S3Service;
+import com.example.gachon.global.s3.dto.S3Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,9 +24,8 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 public class ImagesService {
 
-    @Value("${image}")
-    private String IMAGE_UPLOAD_DIR;
 
+    private final S3Service s3Service;
     private final ImagesRepository imagesRepository;
     private final UsersRepository usersRepository;
 
@@ -44,23 +45,16 @@ public class ImagesService {
         try {
             Users user = usersRepository.findByEmail(email).orElseThrow(()->new UsersHandler(ErrorStatus.USER_NOT_FOUND));
 
-            String fileName = createFileName(file.getOriginalFilename());
-            System.out.println(fileName);
-            String url = IMAGE_UPLOAD_DIR + fileName;
-            System.out.println(url);
-            File dest = new File(url);
-            file.transferTo(dest);
+            S3Result s3Result = s3Service.uploadFile(file);
 
             Images image = Images.builder()
                     .type("USER")
-                    .url(url)
-                    .name(fileName)
+                    .url(s3Result.getFileUrl())
+                    .name(file.getOriginalFilename())
                     .user(user)
                     .build();
 
             imagesRepository.save(image);
-        } catch (IOException e) {
-            throw new ImagesHandler(ErrorStatus.IMAGE_UPLOAD_FAIL);
         } catch (IllegalStateException e){
             throw new ImagesHandler(ErrorStatus.IMAGE_NOT_FOUND);
         }
