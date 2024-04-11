@@ -10,4 +10,8 @@ import java.util.List;
 public interface SentencesRepository extends JpaRepository<Sentences, Long> {
 
     List<Sentences> findAllByGrammarAndDifficulty (String grammar, String difficulty);
+
+    List<Sentences> findAllByGrammar(String grammar);
+
+    List<Sentences> findAllByDifficulty(String difficulty);
 }
