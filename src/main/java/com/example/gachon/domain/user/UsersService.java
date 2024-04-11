@@ -9,6 +9,7 @@ import com.example.gachon.domain.sentence.SentencesRepository;
 import com.example.gachon.domain.user.dto.request.UserRequestDto;
 import com.example.gachon.domain.user.dto.response.UserResponseDto;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
+import com.example.gachon.global.response.exception.handler.GeneralHandler;
 import com.example.gachon.global.response.exception.handler.ImagesHandler;
 import com.example.gachon.global.response.exception.handler.UsersHandler;
 import com.example.gachon.global.security.UserDetailsImpl;
@@ -91,5 +92,17 @@ public class UsersService {
 
         user.setStatus(Status.DISABLED);
         usersRepository.save(user);
+    }
+
+    public UserResponseDto.UserInfoDto getUserInfoByAdmin(String email, Long userId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Users user = usersRepository.findById(userId).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+            return UsersConverter.toUserInfoDto(user);
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+
     }
 }
