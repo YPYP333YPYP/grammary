@@ -45,4 +45,18 @@ public class WordsService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
+
+    public List<WordResponseDto.WordInfoDto> getWordListByAdmin(String email) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            List<Words> words = wordsRepository.findAll();
+            return words.stream()
+                    .map(WordsConverter::toWordInfoDto)
+                    .toList();
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
 }

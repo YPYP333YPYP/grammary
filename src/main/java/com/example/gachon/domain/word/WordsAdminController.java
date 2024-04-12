@@ -34,4 +34,15 @@ public class  WordsAdminController {
 
         return ApiResponse.onSuccess(wordsService.getWordInfoByAdmin(user.getUsername(), wordId));
     }
+
+    @GetMapping("/all")
+    @Operation(summary = "모든 단어 리스트 조회 API ",description = "모든 단어 리스트 가져오기, WordInfoDto 이용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<List<WordResponseDto.WordInfoDto>> getWordListByAdmin(@AuthenticationPrincipal UserDetails user){
+
+        return ApiResponse.onSuccess(wordsService.getWordListByAdmin(user.getUsername()));
+    }
 }
