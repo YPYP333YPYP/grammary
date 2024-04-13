@@ -61,4 +61,16 @@ public class InquiriesAdminController {
         inquiriesService.answerInquiry(user.getUsername(), inquiryId, inquiryAnswerDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
+
+    @DeleteMapping("/{inquiryId}/delete")
+    @Operation(summary = "문의 삭제 요청 API ",description = "문의 삭제 하기")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<SuccessStatus> deleteInquiryByAdmin(@AuthenticationPrincipal UserDetails user,
+                                                        @PathVariable Long inquiryId){
+        inquiriesService.deleteInquiryByAdmin(user.getUsername(), inquiryId);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
 }

@@ -105,4 +105,17 @@ public class InquiriesService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
+
+    @Transactional
+    public void deleteInquiryByAdmin(String email, Long inquiryId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Inquiries inquiry = inquiriesRepository.findById(inquiryId).orElseThrow(()->new InquiryHandler(ErrorStatus.INQUIRY_NOT_FOUND));
+            inquiriesRepository.delete(inquiry);
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
 }
