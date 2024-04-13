@@ -83,4 +83,37 @@ public class NoticesService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
+
+    @Transactional
+    public void updateNotice(String email, Long noticeId, NoticeRequestDto.NoticeUpdateDto noticeUpdateDto) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Notices notice = noticesRepository.findById(noticeId).orElseThrow(()->new NoticesHandler(ErrorStatus.NOTICE_NOT_FOUND));
+
+            notice.setTitle(noticeUpdateDto.getTitle());
+            notice.setContent(noticeUpdateDto.getContent());
+            notice.setCategory(noticeUpdateDto.getCategory());
+
+            noticesRepository.save(notice);
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+
+    @Transactional
+    public void updateNoticePin(String email, Long noticeId, boolean pin) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Notices notice = noticesRepository.findById(noticeId).orElseThrow(()->new NoticesHandler(ErrorStatus.NOTICE_NOT_FOUND));
+
+            notice.setPinned(pin);
+
+            noticesRepository.save(notice);
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+    }
 }

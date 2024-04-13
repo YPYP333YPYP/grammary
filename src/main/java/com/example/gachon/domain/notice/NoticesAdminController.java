@@ -2,9 +2,12 @@ package com.example.gachon.domain.notice;
 
 import com.example.gachon.domain.notice.dto.request.NoticeRequestDto;
 import com.example.gachon.domain.notice.dto.response.NoticeResponseDto;
+import com.example.gachon.domain.user.dto.request.UserRequestDto;
 import com.example.gachon.global.response.ApiResponse;
 import com.example.gachon.global.response.code.resultCode.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +56,32 @@ public class NoticesAdminController {
     public ApiResponse<SuccessStatus> createNotice(@AuthenticationPrincipal UserDetails user,
                                                    @RequestBody NoticeRequestDto.NoticeDto noticeDto) {
         noticesService.createNotice(user.getUsername(), noticeDto);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
+    @PatchMapping("/{noticeId}/update")
+    @Operation(summary = "공지 사항 정보 수정 API", description = "공지 사항 정보 수정하기, NoticeUpdateDto 사용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER404", description = "유저가 존재하지 않습니다", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+    })
+    public ApiResponse<SuccessStatus> updateNotice(@AuthenticationPrincipal UserDetails user,
+                                                 @PathVariable Long noticeId,
+                                                 @RequestBody NoticeRequestDto.NoticeUpdateDto noticeUpdateDto) {
+        noticesService.updateNotice(user.getUsername(), noticeId, noticeUpdateDto);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
+    @PatchMapping("/{noticeId}/pinned")
+    @Operation(summary = "공지 사항 고정 여부 수정 API", description = "공지 사항 게시판 상단에 고정 여부 수정하기")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER404", description = "유저가 존재하지 않습니다", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+    })
+    public ApiResponse<SuccessStatus> updateNoticePin(@AuthenticationPrincipal UserDetails user,
+                                                 @PathVariable Long noticeId,
+                                                 @RequestBody boolean pin) {
+        noticesService.updateNoticePin(user.getUsername(), noticeId, pin);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 }

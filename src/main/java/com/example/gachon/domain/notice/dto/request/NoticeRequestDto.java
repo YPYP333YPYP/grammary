@@ -14,4 +14,13 @@ public class NoticeRequestDto {
         private String category;
         private boolean isPinned;
     }
+
+    @Getter
+    public static class NoticeUpdateDto {
+        private String title;
+        private String content;
+        private String category;
+    }
+
+
 }

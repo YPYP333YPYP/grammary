@@ -61,7 +61,7 @@ public class UsersAdminController {
         return ApiResponse.onSuccess(usersService.getUserHistoryByAdmin(user.getUsername(), userId));
     }
 
-    @PatchMapping("/{userId}/info")
+    @PatchMapping("/{userId}/info/update")
     @Operation(summary = "유저 정보 수정 API", description = "유저 정보 수정하기, UserUpdateDto 사용")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
