@@ -116,4 +116,15 @@ public class NoticesService {
         }
     }
 
+    @Transactional
+    public void deleteNotice(String email, Long noticeId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Notices notice = noticesRepository.findById(noticeId).orElseThrow(()->new NoticesHandler(ErrorStatus.NOTICE_NOT_FOUND));
+            noticesRepository.delete(notice);
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
 }
