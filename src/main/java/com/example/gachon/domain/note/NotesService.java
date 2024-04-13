@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -87,6 +88,28 @@ public class NotesService {
             SentenceInfo sentenceInfo = sentenceInfoRepository.findBySentenceId(note.getSentence().getId()).orElseThrow(() ->
                     new SentencesHandler(ErrorStatus.SENTENCE_INFO_NOT_FOUND));
             return NotesConverter.toNoteInfoDto(note, sentenceInfo.getDescription());
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+
+    public List<NoteResponseDto.NoteInfoDto> getNoteListByAdmin(String email) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            List<NoteResponseDto.NoteInfoDto> infoLists = new ArrayList<>();
+            List<Notes> notes = notesRepository.findAll();
+
+            if (!notes.isEmpty()) {
+                for (Notes note: notes) {
+                    SentenceInfo sentenceInfo = sentenceInfoRepository.findBySentenceId(note.getSentence().getId()).orElseThrow(()->new SentencesHandler(ErrorStatus.SENTENCE_INFO_NOT_FOUND));
+                    NoteResponseDto.NoteInfoDto noteInfoDto = NotesConverter.toNoteInfoDto(note, sentenceInfo.getDescription());
+                    infoLists.add(noteInfoDto);
+                }
+            }
+
+            return infoLists;
 
         } else {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);

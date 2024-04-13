@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 @Tag(name = "admin-note-controller", description = "관리자 노트 관련 API")
 
@@ -34,4 +36,15 @@ public class NotesAdminController {
 
         return ApiResponse.onSuccess(notesService.getNoteInfoByAdmin(noteId, user.getUsername()));
     }
+    @GetMapping("/all")
+    @Operation(summary = "모든 노트 리스트 조회 API ",description = "모든 노트 정보를 리스트로 가져오기, NoteInfoDto 이용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<List<NoteResponseDto.NoteInfoDto>> getNoteInfo(@AuthenticationPrincipal UserDetails user){
+
+        return ApiResponse.onSuccess(notesService.getNoteListByAdmin(user.getUsername()));
+    }
+
 }
