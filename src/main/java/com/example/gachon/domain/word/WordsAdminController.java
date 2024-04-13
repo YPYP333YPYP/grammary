@@ -72,4 +72,16 @@ public class  WordsAdminController {
         wordsService.updateWord(user.getUsername(), wordId, wordDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
+
+    @DeleteMapping("/{wordId}/delete")
+    @Operation(summary = "단어 삭제 요청 API ",description = "단어 삭제 하기")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<SuccessStatus> deleteWord(@AuthenticationPrincipal UserDetails user,
+                                                        @PathVariable Long wordId){
+        wordsService.deleteWord(user.getUsername(), wordId);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
 }

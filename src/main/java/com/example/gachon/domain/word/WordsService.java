@@ -96,4 +96,17 @@ public class WordsService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
+
+    @Transactional
+    public void deleteWord(String email, Long wordId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Words word = wordsRepository.findById(wordId).orElseThrow(()->new WordsHandler(ErrorStatus.WORD_NOT_FOUND));
+            wordsRepository.delete(word);
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
 }
