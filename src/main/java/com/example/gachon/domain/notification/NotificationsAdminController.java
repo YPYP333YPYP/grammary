@@ -84,4 +84,16 @@ public class NotificationsAdminController {
         notificationsService.updateNotification(user.getUsername(), notificationId, notificationDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
+
+    @DeleteMapping ("/{notificationId}/delete")
+    @Operation(summary = "알람 삭제 요청 API ",description = "알람 삭제 하기")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<SuccessStatus> deleteNotification(@AuthenticationPrincipal UserDetails user,
+                                                   @PathVariable Long notificationId){
+        notificationsService.deleteNotification(user.getUsername(), notificationId);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
 }

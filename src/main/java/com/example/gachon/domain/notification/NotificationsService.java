@@ -130,4 +130,16 @@ public class NotificationsService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
+
+    @Transactional
+    public void deleteNotification(String email, Long notificationId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Notifications notification = notificationsRepository.findById(notificationId).orElseThrow(()->new NotificationsHandler(ErrorStatus.NOTIFICATION_NOT_FOUND));
+            notificationsRepository.delete(notification);
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
 }
