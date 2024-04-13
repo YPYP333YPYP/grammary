@@ -23,11 +23,10 @@ public enum ErrorStatus implements BaseErrorCode {
     USER_EXISTS_NAME(HttpStatus.BAD_REQUEST, "USER402", "중복된 이름입니다."),
     USER_FAILED_TO_PASSWORD(HttpStatus.BAD_REQUEST, "USER403", "비밀번호가 잘못되었습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "유저를 찾을 수 없습니다."),
-
     NICKNAME_NOT_FOUND(HttpStatus.NOT_FOUND, "USER407", "존재하지 않는 유저 닉네임입니다."),
     NAME_NOT_FOUND(HttpStatus.NOT_FOUND, "USER408", "존재하지 않는 유저 이름입니다."),
     USER_CREATE_FAIL(HttpStatus.BAD_REQUEST,"USER409", "유저 생성에 실패하였습니다."),
-    USER_DELETE_FAIL(HttpStatus.BAD_REQUEST,"USER410", "유저 삭제에 실패하였습니다."),
+    USER_DELETE_FAIL(HttpStatus.BAD_REQUEST,"USER410", "유저 상태가 비활성화 상태가 아닙니다."),
     USER_EXISTS_NICKNAME(HttpStatus.BAD_REQUEST, "USER411", "중복된 닉네임입니다."),
     USER_PHONE_NUM_NOT_FOUND(HttpStatus.NOT_FOUND, "USER412", "존재하지 않는 전화번호입니다."),
     USER_EXISTS_NO_INPUT_EMAIL(HttpStatus.BAD_REQUEST, "USER413", "이메일을 입력하지 않았습니다."),

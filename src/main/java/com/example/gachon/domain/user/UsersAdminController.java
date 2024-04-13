@@ -73,4 +73,16 @@ public class UsersAdminController {
         usersService.updateUser(user.getUsername(), userId, userUpdateDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
+
+    @DeleteMapping ("/{userId}/delete")
+    @Operation(summary = "유저 삭제 요청 API ",description = "유저 삭제 하기")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<SuccessStatus> deleteUser(@AuthenticationPrincipal UserDetails user,
+                                                 @PathVariable Long userId){
+        usersService.deleteUser(user.getUsername(), userId);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
 }

@@ -160,4 +160,22 @@ public class UsersService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
+
+    @Transactional
+    public void deleteUser(String email, Long userId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Users user = usersRepository.findById(userId).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+            if (user.getStatus().equals(Status.DISABLED)) {
+                usersRepository.delete(user);
+            } else {
+                throw new UsersHandler(ErrorStatus.USER_DELETE_FAIL);
+            }
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
 }
