@@ -2,17 +2,20 @@ package com.example.gachon.domain.inquiry;
 
 import com.example.gachon.domain.inquiry.dto.request.InquiryRequestDto;
 import com.example.gachon.domain.inquiry.dto.response.InquiryResponseDto;
+import com.example.gachon.domain.note.Notes;
+import com.example.gachon.domain.note.NotesConverter;
+import com.example.gachon.domain.sentenceInfo.SentenceInfo;
 import com.example.gachon.domain.user.Users;
 import com.example.gachon.domain.user.UsersRepository;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
-import com.example.gachon.global.response.exception.handler.InquiryHandler;
-import com.example.gachon.global.response.exception.handler.UsersHandler;
+import com.example.gachon.global.response.exception.handler.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -57,5 +60,32 @@ public class InquiriesService {
         Inquiries inquiry = inquiriesRepository.findByUserAndId(user, inquiryId);
 
         inquiriesRepository.delete(inquiry);
+    }
+
+    public InquiryResponseDto.InquiryInfoDto getInquiryInfoByAdmin(String email, Long inquiryId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Inquiries inquiry = inquiriesRepository.findById(inquiryId).orElseThrow(()->new InquiryHandler(ErrorStatus.INQUIRY_NOT_FOUND));
+
+            return InquiriesConverter.toInquiryInfoDto(inquiry);
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+
+    public List<InquiryResponseDto.InquiryInfoDto> getInquiryListByAdmin(String email) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            List<Inquiries> inquiries = inquiriesRepository.findAll();
+            return inquiries.stream()
+                    .map(InquiriesConverter::toInquiryInfoDto)
+                    .toList();
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
     }
 }
