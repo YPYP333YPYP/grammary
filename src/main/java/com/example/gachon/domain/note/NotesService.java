@@ -9,16 +9,16 @@ import com.example.gachon.domain.sentenceInfo.SentenceInfoRepository;
 import com.example.gachon.domain.user.Users;
 import com.example.gachon.domain.user.UsersConverter;
 import com.example.gachon.domain.user.UsersRepository;
+import com.example.gachon.domain.word.Words;
+import com.example.gachon.domain.word.WordsConverter;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
-import com.example.gachon.global.response.exception.handler.MemosHandler;
-import com.example.gachon.global.response.exception.handler.NotesHandler;
-import com.example.gachon.global.response.exception.handler.SentencesHandler;
-import com.example.gachon.global.response.exception.handler.UsersHandler;
+import com.example.gachon.global.response.exception.handler.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,5 +77,19 @@ public class NotesService {
     public void deleteNote(Long noteId) {
         Notes note = notesRepository.findById(noteId).orElseThrow(()-> new NotesHandler(ErrorStatus.NOTE_NOT_FOUND));
         notesRepository.delete(note);
+    }
+
+    public NoteResponseDto.NoteInfoDto getNoteInfoByAdmin(Long noteId, String email) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Notes note = notesRepository.findById(noteId).orElseThrow(()-> new NotesHandler(ErrorStatus.NOTE_NOT_FOUND));
+            SentenceInfo sentenceInfo = sentenceInfoRepository.findBySentenceId(note.getSentence().getId()).orElseThrow(() ->
+                    new SentencesHandler(ErrorStatus.SENTENCE_INFO_NOT_FOUND));
+            return NotesConverter.toNoteInfoDto(note, sentenceInfo.getDescription());
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
     }
 }
