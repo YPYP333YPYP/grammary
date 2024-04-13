@@ -14,4 +14,13 @@ public class InquiryRequestDto {
     public static class InquiryDto {
         private String request;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquiryAnswerDto {
+        private String response;
+    }
+
 }

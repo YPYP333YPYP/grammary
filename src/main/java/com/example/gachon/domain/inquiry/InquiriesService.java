@@ -88,4 +88,21 @@ public class InquiriesService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
+
+    @Transactional
+    public void answerInquiry(String email, Long inquiryId, InquiryRequestDto.InquiryAnswerDto inquiryAnswerDto) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Inquiries inquiry = inquiriesRepository.findById(inquiryId).orElseThrow(()->new InquiryHandler(ErrorStatus.INQUIRY_NOT_FOUND));
+
+            inquiry.setResponseMessage(inquiryAnswerDto.getResponse());
+            inquiry.setResponseTimestamp(LocalDateTime.now());
+
+            inquiriesRepository.save(inquiry);
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
 }
