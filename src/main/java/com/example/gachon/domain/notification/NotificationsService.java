@@ -113,4 +113,21 @@ public class NotificationsService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
+
+    @Transactional
+    public void updateNotification(String email, Long notificationId, NotificationRequestDto.NotificationDto notificationDto) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Notifications notification = notificationsRepository.findById(notificationId).orElseThrow(()->new NotificationsHandler(ErrorStatus.NOTIFICATION_NOT_FOUND));
+
+            notification.setName(notificationDto.getName());
+            notification.setContent(notification.getContent());
+            notification.setType(notification.getType());
+
+            notificationsRepository.save(notification);
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
 }

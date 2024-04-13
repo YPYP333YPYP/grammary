@@ -6,6 +6,8 @@ import com.example.gachon.domain.notification.dto.response.NotificationResponseD
 import com.example.gachon.global.response.ApiResponse;
 import com.example.gachon.global.response.code.resultCode.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +69,19 @@ public class NotificationsAdminController {
     public ApiResponse<SuccessStatus> createNotification(@AuthenticationPrincipal UserDetails user,
                                                    @RequestBody NotificationRequestDto.NotificationDto notificationDto) {
         notificationsService.createNotification(user.getUsername(), notificationDto);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
+    @PatchMapping("/{notificationId}/update")
+    @Operation(summary = "알람 정보 수정 API", description = "알람 정보 수정하기, NoticeUpdateDto 사용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER404", description = "유저가 존재하지 않습니다", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+    })
+    public ApiResponse<SuccessStatus> updateNotification(@AuthenticationPrincipal UserDetails user,
+                                                   @PathVariable Long notificationId,
+                                                   @RequestBody NotificationRequestDto.NotificationDto notificationDto) {
+        notificationsService.updateNotification(user.getUsername(), notificationId, notificationDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 }
