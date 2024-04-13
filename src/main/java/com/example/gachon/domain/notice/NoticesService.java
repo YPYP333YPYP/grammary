@@ -1,6 +1,7 @@
 package com.example.gachon.domain.notice;
 
 import com.example.gachon.domain.history.Histories;
+import com.example.gachon.domain.notice.dto.request.NoticeRequestDto;
 import com.example.gachon.domain.notice.dto.response.NoticeResponseDto;
 import com.example.gachon.domain.sentence.Sentences;
 import com.example.gachon.domain.user.Users;
@@ -60,6 +61,24 @@ public class NoticesService {
             return notices.stream()
                     .map(NoticesConverter::toNoticePreviewDto)
                     .collect(Collectors.toList());
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+
+    @Transactional
+    public void createNotice(String email, NoticeRequestDto.NoticeDto noticeDto) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Notices notice = Notices.builder()
+                    .title(noticeDto.getTitle())
+                    .content(noticeDto.getContent())
+                    .category(noticeDto.getCategory())
+                    .isPinned(noticeDto.isPinned())
+                    .user(reqUser)
+                    .build();
+            noticesRepository.save(notice);
         } else {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
