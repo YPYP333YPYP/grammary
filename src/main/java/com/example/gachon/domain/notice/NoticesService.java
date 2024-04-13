@@ -115,5 +115,5 @@ public class NoticesService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
-    }
+
 }
