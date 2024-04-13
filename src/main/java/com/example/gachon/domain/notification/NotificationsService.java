@@ -2,6 +2,8 @@ package com.example.gachon.domain.notification;
 
 import com.example.gachon.domain.notice.Notices;
 import com.example.gachon.domain.notice.NoticesConverter;
+import com.example.gachon.domain.notice.dto.request.NoticeRequestDto;
+import com.example.gachon.domain.notification.dto.request.NotificationRequestDto;
 import com.example.gachon.domain.notification.dto.response.NotificationResponseDto;
 import com.example.gachon.domain.user.Users;
 import com.example.gachon.domain.user.UsersRepository;
@@ -88,6 +90,25 @@ public class NotificationsService {
             notification.setUser(user);
             notificationsRepository.save(notification);
 
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+
+    @Transactional
+    public void createNotification(String email, NotificationRequestDto.NotificationDto notificationDto) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Notifications notification = Notifications.builder()
+                    .name(notificationDto.getName())
+                    .content(notificationDto.getContent())
+                    .type(notificationDto.getType())
+                    .isRead(notificationDto.isRead())
+                    .user(reqUser)
+                    .build();
+
+            notificationsRepository.save(notification);
         } else {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }

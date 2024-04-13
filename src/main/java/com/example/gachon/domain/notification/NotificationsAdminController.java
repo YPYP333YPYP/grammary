@@ -1,5 +1,7 @@
 package com.example.gachon.domain.notification;
 
+import com.example.gachon.domain.notice.dto.request.NoticeRequestDto;
+import com.example.gachon.domain.notification.dto.request.NotificationRequestDto;
 import com.example.gachon.domain.notification.dto.response.NotificationResponseDto;
 import com.example.gachon.global.response.ApiResponse;
 import com.example.gachon.global.response.code.resultCode.SuccessStatus;
@@ -54,6 +56,17 @@ public class NotificationsAdminController {
     public ApiResponse<SuccessStatus> sendOut(@AuthenticationPrincipal UserDetails user,
                                               @PathVariable Long notificationId, @PathVariable Long userId){
         notificationsService.sendOut(user.getUsername(),notificationId,userId);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
+    @PostMapping("")
+    @Operation(summary = "알람 생성 API ",description = "알람 생성하기, NotificationDto 이용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+    public ApiResponse<SuccessStatus> createNotice(@AuthenticationPrincipal UserDetails user,
+                                                   @RequestBody NotificationRequestDto.NotificationDto notificationDto) {
+        notificationsService.createNotification(user.getUsername(), notificationDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 }
