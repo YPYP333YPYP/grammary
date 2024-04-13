@@ -1,7 +1,10 @@
 package com.example.gachon.domain.sentence;
 
+import com.example.gachon.domain.sentence.dto.request.SentenceRequestDto;
 import com.example.gachon.domain.sentence.dto.response.SentenceResponseDto;
+import com.example.gachon.domain.word.dto.request.WordRequestDto;
 import com.example.gachon.global.response.ApiResponse;
+import com.example.gachon.global.response.code.resultCode.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,5 +46,16 @@ public class SentenceAdminController {
                                                                                                      @RequestParam String grammar,
                                                                                                      @RequestParam String difficulty) {
         return ApiResponse.onSuccess(sentencesService.getAllSentenceInfoWithQueryByAdmin(difficulty,grammar,user.getUsername()));
+    }
+
+    @PostMapping("")
+    @Operation(summary = "문장 생성 API ",description = "문장 여러 개 생성하기, SentenceDto 이용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+    public ApiResponse<SuccessStatus> createWord(@AuthenticationPrincipal UserDetails user,
+                                                 @RequestBody SentenceRequestDto.SentenceDto sentenceDto) {
+        sentencesService.createSentences(user.getUsername(), sentenceDto);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 }

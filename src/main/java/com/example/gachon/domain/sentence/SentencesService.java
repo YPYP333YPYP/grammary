@@ -4,6 +4,7 @@ import com.example.gachon.domain.history.Histories;
 import com.example.gachon.domain.history.HistoriesRepository;
 import com.example.gachon.domain.note.Notes;
 import com.example.gachon.domain.note.NotesRepository;
+import com.example.gachon.domain.sentence.dto.request.SentenceRequestDto;
 import com.example.gachon.domain.sentence.dto.response.SentenceResponseDto;
 import com.example.gachon.domain.sentenceInfo.SentenceInfo;
 import com.example.gachon.domain.sentenceInfo.SentenceInfoRepository;
@@ -147,5 +148,20 @@ public class SentencesService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
 
+    }
+
+    @Transactional
+    public void createSentences(String email, SentenceRequestDto.SentenceDto sentenceDto) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+
+            // todo
+            // AI Server에 요청 후 문장 생성
+
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
     }
 }
