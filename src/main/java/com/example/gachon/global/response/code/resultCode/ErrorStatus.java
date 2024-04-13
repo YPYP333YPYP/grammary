@@ -50,6 +50,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // OAuth
     EXPIRED_JWT_EXCEPTION(HttpStatus.UNAUTHORIZED, "OAUTH401", "기존 토큰이 만료되었습니다. 토큰을 재발급해주세요."),
+    
+    // History
+    HISTORY_NOT_FOUND(HttpStatus.NOT_FOUND, "HISTORY404", "검색 내역을 찾을 수 없습니다"),
+
 
     // Image
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE401", "파일이 존재하지 않습니다."),

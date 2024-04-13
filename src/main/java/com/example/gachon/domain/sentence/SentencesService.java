@@ -12,6 +12,7 @@ import com.example.gachon.domain.user.Users;
 import com.example.gachon.domain.user.UsersRepository;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
 import com.example.gachon.global.response.exception.handler.GeneralHandler;
+import com.example.gachon.global.response.exception.handler.HistoriesHandler;
 import com.example.gachon.global.response.exception.handler.SentencesHandler;
 import com.example.gachon.global.response.exception.handler.UsersHandler;
 import lombok.RequiredArgsConstructor;
@@ -91,7 +92,7 @@ public class SentencesService {
     public void deleteHistory(Long sentenceId, String email) {
         Users user = usersRepository.findByEmail(email).orElseThrow(()-> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
         Sentences sentence = sentencesRepository.findById(sentenceId).orElseThrow(()-> new SentencesHandler(ErrorStatus.SENTENCE_NOT_FOUND));
-        Histories history = historiesRepository.findByUserAndSentence(user, sentence);
+        Histories history = historiesRepository.findByUserAndSentence(user, sentence).orElseThrow(()-> new HistoriesHandler(ErrorStatus.HISTORY_NOT_FOUND));
 
         historiesRepository.delete(history);
     }

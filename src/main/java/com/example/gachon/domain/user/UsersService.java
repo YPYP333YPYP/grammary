@@ -12,6 +12,7 @@ import com.example.gachon.domain.user.dto.request.UserRequestDto;
 import com.example.gachon.domain.user.dto.response.UserResponseDto;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
 import com.example.gachon.global.response.exception.handler.GeneralHandler;
+import com.example.gachon.global.response.exception.handler.HistoriesHandler;
 import com.example.gachon.global.response.exception.handler.ImagesHandler;
 import com.example.gachon.global.response.exception.handler.UsersHandler;
 import com.example.gachon.global.security.UserDetailsImpl;
@@ -174,6 +175,21 @@ public class UsersService {
                 throw new UsersHandler(ErrorStatus.USER_DELETE_FAIL);
             }
 
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+
+    @Transactional
+    public void deleteHistoryByAdmin(String email, Long userId, Long sentenceId) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Users user = usersRepository.findById(userId).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+            Sentences sentence = sentencesRepository.findById(sentenceId).orElseThrow(()->new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+            Histories history = historiesRepository.findByUserAndSentence(user, sentence).orElseThrow(()->new HistoriesHandler(ErrorStatus.HISTORY_NOT_FOUND));
+            historiesRepository.delete(history);
         } else {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
