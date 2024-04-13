@@ -19,4 +19,16 @@ public class UserRequestDto {
         private String phoneNum;
         private String social;
     }
+
+    @Getter
+    public static class UserUpdateDto {
+        private String email;
+        private String social;
+        private String phoneNum;
+        private String name;
+        private String nickname;
+        private String password;
+        private String status;
+
+    }
 }

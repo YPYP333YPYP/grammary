@@ -15,6 +15,7 @@ import com.example.gachon.global.response.exception.handler.GeneralHandler;
 import com.example.gachon.global.response.exception.handler.ImagesHandler;
 import com.example.gachon.global.response.exception.handler.UsersHandler;
 import com.example.gachon.global.security.UserDetailsImpl;
+import jakarta.persistence.EnumType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -138,5 +139,25 @@ public class UsersService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
 
+    }
+
+    @Transactional
+    public void updateUser(String email, Long userId, UserRequestDto.UserUpdateDto userUpdateDto) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Users user = usersRepository.findById(userId).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+            user.setName(userUpdateDto.getName());
+            user.setPhoneNum(userUpdateDto.getPhoneNum());
+            user.setPassword(userUpdateDto.getPassword());
+            user.setNickname(userUpdateDto.getNickname());
+            user.setSocial(userUpdateDto.getSocial());
+            user.setStatus(Status.valueOf(userUpdateDto.getStatus()));
+
+            usersRepository.save(user);
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
     }
 }
