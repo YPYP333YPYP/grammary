@@ -89,4 +89,16 @@ public class SentenceAdminController {
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 
+    @DeleteMapping ("/{sentenceId}/delete")
+    @Operation(summary = "문장 삭제 API ",description = "문장 삭제 하기")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+
+    public ApiResponse<SuccessStatus> deleteSentence(@AuthenticationPrincipal UserDetails user,
+                                                     @PathVariable Long sentenceId){
+        sentencesService.deleteSentence(user.getUsername(), sentenceId);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
 }
