@@ -7,6 +7,7 @@ public class InquiriesConverter {
     public static InquiryResponseDto.InquiryInfoDto toInquiryInfoDto(Inquiries inquiries) {
         return InquiryResponseDto.InquiryInfoDto.builder()
                 .inquiryId(inquiries.getId())
+                .userId(inquiries.getUser().getId())
                 .requestMessage(inquiries.getRequestMessage())
                 .responseMessage(inquiries.getResponseMessage())
                 .requestTimestamp(inquiries.getRequestTimestamp())

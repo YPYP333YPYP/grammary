@@ -15,6 +15,7 @@ public class InquiryResponseDto {
     @AllArgsConstructor
     public static class InquiryInfoDto{
         private Long inquiryId;
+        private Long userId;
         private String requestMessage;
         private String responseMessage;
         private LocalDateTime requestTimestamp;
