@@ -64,7 +64,7 @@ public class NotificationsAdminController {
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
     })
-    public ApiResponse<SuccessStatus> createNotice(@AuthenticationPrincipal UserDetails user,
+    public ApiResponse<SuccessStatus> createNotification(@AuthenticationPrincipal UserDetails user,
                                                    @RequestBody NotificationRequestDto.NotificationDto notificationDto) {
         notificationsService.createNotification(user.getUsername(), notificationDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);

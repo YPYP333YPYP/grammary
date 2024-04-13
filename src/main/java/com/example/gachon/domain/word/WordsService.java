@@ -5,6 +5,7 @@ import com.example.gachon.domain.sentence.SentencesConverter;
 import com.example.gachon.domain.sentenceInfo.SentenceInfo;
 import com.example.gachon.domain.user.Users;
 import com.example.gachon.domain.user.UsersRepository;
+import com.example.gachon.domain.word.dto.request.WordRequestDto;
 import com.example.gachon.domain.word.dto.response.WordResponseDto;
 import com.example.gachon.global.response.code.resultCode.ErrorStatus;
 import com.example.gachon.global.response.exception.handler.GeneralHandler;
@@ -54,6 +55,25 @@ public class WordsService {
             return words.stream()
                     .map(WordsConverter::toWordInfoDto)
                     .toList();
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+
+    @Transactional
+    public void createWord(String email, List<WordRequestDto.WordDto> wordListDto) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            for (WordRequestDto.WordDto wordDto : wordListDto) {
+                Words word = Words.builder()
+                        .name(wordDto.getName())
+                        .meaning(wordDto.getMeaning())
+                        .build();
+
+                wordsRepository.save(word);
+            }
 
         } else {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
