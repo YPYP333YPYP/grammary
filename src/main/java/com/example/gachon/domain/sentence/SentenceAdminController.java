@@ -1,11 +1,14 @@
 package com.example.gachon.domain.sentence;
 
+import com.example.gachon.domain.inquiry.dto.request.InquiryRequestDto;
 import com.example.gachon.domain.sentence.dto.request.SentenceRequestDto;
 import com.example.gachon.domain.sentence.dto.response.SentenceResponseDto;
 import com.example.gachon.domain.word.dto.request.WordRequestDto;
 import com.example.gachon.global.response.ApiResponse;
 import com.example.gachon.global.response.code.resultCode.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -58,4 +61,32 @@ public class SentenceAdminController {
         sentencesService.createSentences(user.getUsername(), sentenceDto);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
+
+    @PatchMapping("/{sentenceId}/update")
+    @Operation(summary = "문장 수정 API", description = "문장 수정 하기, SentenceUpdateDto 사용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER404", description = "유저가 존재하지 않습니다", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+    })
+    public ApiResponse<SuccessStatus> updateSentence(@AuthenticationPrincipal UserDetails user,
+                                                    @PathVariable Long sentenceId,
+                                                    @RequestBody SentenceRequestDto.SentenceUpdateDto sentenceUpdateDto) {
+        sentencesService.updateSentence(user.getUsername(), sentenceId, sentenceUpdateDto);
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
+    @PatchMapping("/{sentenceId}/info/update")
+    @Operation(summary = "문장 수정 구성 성분 수정 API", description = "문장 구성 성분 수정 하기, SentenceComponentUpdateDto 사용")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "USER404", description = "유저가 존재하지 않습니다", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+    })
+    public ApiResponse<SuccessStatus> updateSentenceComponent(@AuthenticationPrincipal UserDetails user,
+                                                     @PathVariable Long sentenceId,
+                                                     @RequestBody SentenceRequestDto.SentenceComponentUpdateDto sentenceComponentUpdateDto) {
+        sentencesService.updateSentenceComponent(user.getUsername(), sentenceId, sentenceComponentUpdateDto);
+
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
 }

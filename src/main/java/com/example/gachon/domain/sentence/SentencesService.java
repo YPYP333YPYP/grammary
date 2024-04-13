@@ -164,4 +164,49 @@ public class SentencesService {
             throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
         }
     }
+
+    @Transactional
+    public void updateSentence(String email, Long sentenceId, SentenceRequestDto.SentenceUpdateDto sentenceUpdateDto) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            Sentences sentence = sentencesRepository.findById(sentenceId).orElseThrow(()-> new SentencesHandler(ErrorStatus.SENTENCE_NOT_FOUND));
+
+            sentence.setType(sentenceUpdateDto.getType());
+            sentence.setContent(sentence.getContent());
+            sentence.setDifficulty(sentence.getDifficulty());
+            sentence.setGrammar(sentence.getGrammar());
+
+            sentencesRepository.save(sentence);
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
+
+    @Transactional
+    public void updateSentenceComponent(String email, Long sentenceId, SentenceRequestDto.SentenceComponentUpdateDto sentenceComponentUpdateDto) {
+        Users reqUser = usersRepository.findByEmail(email).orElseThrow(() -> new UsersHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (Objects.equals(reqUser.getRole(), "ADMIN")) {
+            SentenceInfo sentenceInfo = sentenceInfoRepository.findBySentenceId(sentenceId).orElseThrow(() -> new SentencesHandler(ErrorStatus.SENTENCE_INFO_NOT_FOUND));
+
+            sentenceInfo.setSubject(sentenceComponentUpdateDto.getSubject());
+            sentenceInfo.setVerb(sentenceComponentUpdateDto.getVerb());
+            sentenceInfo.setObject(sentenceComponentUpdateDto.getObject());
+            sentenceInfo.setComplement(sentenceComponentUpdateDto.getComplement());
+            sentenceInfo.setAdverbialPhrase(sentenceComponentUpdateDto.getAdverbialPhrase());
+            sentenceInfo.setConjunction(sentenceComponentUpdateDto.getConjunction());
+            sentenceInfo.setRelativeClause(sentenceComponentUpdateDto.getRelativeClause());
+            sentenceInfo.setDirectObject(sentenceComponentUpdateDto.getDirectObject());
+            sentenceInfo.setIndirectObject(sentenceComponentUpdateDto.getIndirectObject());
+            sentenceInfo.setDescription(sentenceComponentUpdateDto.getDescription());
+            sentenceInfo.setInterpretation(sentenceComponentUpdateDto.getInterpretation());
+
+            sentenceInfoRepository.save(sentenceInfo);
+
+        } else {
+            throw new GeneralHandler(ErrorStatus.UNAUTHORIZED);
+        }
+    }
 }
