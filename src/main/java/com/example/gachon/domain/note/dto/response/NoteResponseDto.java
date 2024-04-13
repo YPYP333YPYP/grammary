@@ -13,6 +13,7 @@ public class NoteResponseDto {
     @AllArgsConstructor
     public static class NoteInfoDto{
         private Long id;
+        private Long userId;
         private Long sentenceId;
         private String name;
         private String content;

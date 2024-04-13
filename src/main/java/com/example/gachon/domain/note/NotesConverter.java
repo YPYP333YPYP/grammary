@@ -7,6 +7,7 @@ public class NotesConverter {
     public static NoteResponseDto.NoteInfoDto toNoteInfoDto(Notes note, String description) {
         return NoteResponseDto.NoteInfoDto.builder()
                 .id(note.getId())
+                .userId(note.getUser().getId())
                 .sentenceId(note.getSentence().getId())
                 .name(note.getSentence().getContent())
                 .content(description)
